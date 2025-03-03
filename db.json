@@ -1,0 +1,29 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "nimi": "Aku Ankka",
+      "puhelin": "050-2432234"
+    },
+    {
+      "id": 2,
+      "nimi": "Hessu Hopo",
+      "puhelin": "044-4323433"
+    },
+    {
+      "id": 3,
+      "nimi": "Roope Ankka",
+      "puhelin": "050-1111111"
+    },
+    {
+      "id": 4,
+      "nimi": "Hauska Henrik",
+      "puhelin": "040-4445555"
+    },
+    {
+      "id": 5,
+      "nimi": "Nikolett Berkine",
+      "puhelin": "041-4913342"
+    }
+  ]
+}

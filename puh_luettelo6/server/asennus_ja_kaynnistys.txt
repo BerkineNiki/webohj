@@ -1,0 +1,7 @@
+npm install -g json-server@0
+
+käynnistys:
+
+json-server --watch db.json
+
+kts. https://www.digitalocean.com/community/tutorials/json-server
