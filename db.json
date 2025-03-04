@@ -3,12 +3,12 @@
     {
       "id": 1,
       "nimi": "Aku Ankka",
-      "puhelin": "050-2432234"
+      "puhelin": "050-2432235"
     },
     {
       "id": 2,
       "nimi": "Hessu Hopo",
-      "puhelin": "044-4323433"
+      "puhelin": "040-6543432"
     },
     {
       "id": 3,
@@ -24,6 +24,11 @@
       "id": 5,
       "nimi": "Nikolett Berkine",
       "puhelin": "041-4913342"
+    },
+    {
+      "id": 6,
+      "nimi": "Kiva Kevin",
+      "puhelin": "045-9876543"
     }
   ]
 }

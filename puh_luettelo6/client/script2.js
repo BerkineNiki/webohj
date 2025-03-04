@@ -2,7 +2,7 @@
   fetch("http://localhost:3000/items")
     .then((res) => res.json())
     .then((data) => {
-      console.log("Data received from server:", data); // Log the data
+      console.log("Data received from server:", data); // Tulostetaan data
       displayUser(data);
     });
 })();
@@ -10,10 +10,10 @@
 const userDisplay = document.querySelector(".table");
 
 displayUser = (data) => {
-  // Clear existing table content
+  // Tyhjennetään olemassa oleva taulukon sisältö
   userDisplay.innerHTML = "";
 
-  // Set table headers
+  // Asetetaan taulukon otsikot
   userDisplay.innerHTML = `
     <thead>
     <tr>
@@ -54,21 +54,21 @@ displayRow = (data) => {
 
 removeRow = async (id) => {
   console.log(id);
-  // Simple DELETE request with fetch
+  // Yksinkertainen DELETE-pyyntö fetchillä
   let polku = "http://localhost:3000/items/" + id;
   await fetch(polku, { method: "DELETE" }).then(() =>
     console.log("Poisto onnistui")
   );
-  window.location.reload(); //ladataan ikkuna uudelleen
+  window.location.reload(); // Ladataan ikkuna uudelleen
 };
 
 /**
- * Helper function for POSTing data as JSON with fetch.
+ * Apufunktio datan POSTaamiseen JSONina fetchillä.
  *
  * @param {Object} options
- * @param {string} options.url - URL to POST data to
- * @param {Object} options.data - Data object to be sent
- * @return {Object} - Response body from URL that was POSTed to
+ * @param {string} options.url - URL, johon data POSTataan
+ * @param {Object} options.data - Lähetettävä dataobjekti
+ * @return {Object} - Vastaus, joka saatiin URL:stä, johon data POSTattiin
  */
 async function postFormDataAsJson({ url, data }) {
   const fetchOptions = {
@@ -91,7 +91,7 @@ async function postFormDataAsJson({ url, data }) {
 }
 
 /**
- * Event handler for a form submit event.
+ * Lomakkeen lähetyksen tapahtumankäsittelijä.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event
  *
@@ -107,7 +107,7 @@ async function handleFormSubmit(event) {
     const formData = new FormData(form);
     const plainFormData = Object.fromEntries(formData.entries());
 
-    // Fetch existing items to determine the next ID
+    // Haetaan olemassa olevat kohteet seuraavan ID:n määrittämiseksi
     const response = await fetch("http://localhost:3000/items");
     const existingItems = await response.json();
     const maxId = existingItems.reduce(
@@ -116,15 +116,15 @@ async function handleFormSubmit(event) {
     );
     const newId = maxId + 1;
 
-    // Create the data object with the correct order
+    // Luodaan dataobjekti oikeassa järjestyksessä
     const data = {
-      id: newId, // Generate a sequential ID
+      id: newId, // Luodaan peräkkäinen ID
       nimi: plainFormData.nimi,
       puhelin: plainFormData.puhelin,
     };
 
     const responseData = await postFormDataAsJson({ url, data });
-    await loadPage(); //päivitetään taulukkoon
+    await loadPage(); // Päivitetään taulukkoon
 
     console.log({ responseData });
   } catch (error) {
@@ -144,19 +144,31 @@ function editRow(id) {
 async function saveRow(id) {
   let newPhone = document.getElementById(`edit_phone_${id}`).value;
 
-  // Fetch the existing item data
+  // Tarkistetaan, että uusi puhelinnumero sisältää vain numeroita
+  if (!/^\d{2,3}-?\d+$/.test(newPhone)) {
+    alert(
+      "Puhelinnumero voi sisältää vain numeroita ja mahdollisesti yhden väliviivan."
+    ); // Näytetään virheilmoitus
+    return;
+  }
+
+  // Haetaan olemassa oleva kohde
   let polku = "http://localhost:3000/items/" + id;
   const response = await fetch(polku);
+  if (!response.ok) {
+    alert("Virhe haettaessa kohdetta."); // Näytetään virheilmoitus
+    return;
+  }
   const existingItem = await response.json();
 
-  // Update only the phone number
+  // Päivitetään vain puhelinnumero
   const updatedItem = {
     id: existingItem.id,
     nimi: existingItem.nimi,
     puhelin: newPhone,
   };
 
-  await fetch(polku, {
+  const updateResponse = await fetch(polku, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -164,5 +176,10 @@ async function saveRow(id) {
     body: JSON.stringify(updatedItem),
   });
 
-  window.location.reload(); // Lataa sivu uudelleen, jotta päivitys näkyy
+  if (!updateResponse.ok) {
+    alert("Virhe päivitettäessä kohdetta."); // Näytetään virheilmoitus
+    return;
+  }
+
+  window.location.reload(); // Ladataan sivu uudelleen, jotta päivitys näkyy
 }
